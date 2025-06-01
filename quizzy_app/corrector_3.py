@@ -41,7 +41,7 @@ def parse_correction_into_array(cleaned_string):
                 choice_match = re.search(r'\$2/2\$\s*(.*?)\s*\$2/2\$', line)
                 if choice_match and current_question is not None:
                     choice_id = choice_match.group(1).strip()
-                    current_question.append([choice_id])  # Add the choice ID to the current question array
+                    current_question.append([choice_id, ""])  # Add choice_id and empty text placeholder
                     print(f"[DEBUG] Added choice {choice_id} to current question")
                 else:
                     print(f"[DEBUG] Choice regex didn't match or no current question")
