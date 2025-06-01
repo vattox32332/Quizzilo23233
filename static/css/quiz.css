@@ -1,0 +1,344 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    margin: auto;
+    margin-top: 5vh;
+    width: 80%;
+    height: 80vh;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+}
+
+@media only screen and (max-width: 400px) {
+    .container {
+        margin: auto;
+        margin-top: 5vh;
+        width: 80%;
+        height: 70vh;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+    }
+}
+
+.nav-div {
+    display: none;
+}
+
+.nav-div.active {
+    display: block;
+}
+
+.buttons {
+    margin-top: 20px;
+}
+
+.nav-btn {
+    border-radius: 5px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 10px;
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+#submitBtn_blend{
+    margin-bottom: 50px;
+}
+
+#submitBtn {
+    display: none;
+}
+
+.question{
+    height: 20vh;
+    overflow: auto;
+    margin-bottom: 10vh;
+}
+
+.choices-container{
+    margin: auto;
+    width: 90%;
+    height: 35vh;
+    margin-bottom: 20px;
+    overflow: auto;
+}
+
+.PASS {
+    color: #34e269;
+}
+
+.FAIL {
+    color: red;
+}
+
+.neutral {
+    background-color: white !important;
+    border-left: 5px solid white !important;
+}
+
+.correct {
+    background-color: #34e269 !important;
+    border-left: 5px solid #34e269 !important;
+}
+
+.corrected {
+    background-color: #34e269 !important;
+    border-left: 5px solid #34e269 !important;
+    opacity: 0.7;
+}
+
+.negative {
+    background-color: red !important;
+    border-left: 5px solid red !important;
+}
+
+.choice{
+    border-left: 5px solid #007bff;
+    display: flex;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+::-webkit-scrollbar {
+width: 2px;               /* width of the entire scrollbar */
+}
+::-webkit-scrollbar-track {
+background: transparent;        /* color of the tracking area */
+}
+::-webkit-scrollbar-thumb {
+background-color: #007bff;    /* color of the scroll thumb */
+border-radius: 20px;       /* roundness of the scroll thumb */
+border: none;  /* creates padding around scroll thumb */
+}
+
+.round-checkbox {
+display: inline-flex;
+align-items: center;
+cursor: pointer;
+}
+
+.round-checkbox h4 {
+margin: 0; /* Remove default margin from h4 */
+font-size: 1.25rem; /* Optional: Adjust size to match design */
+}
+
+.round-checkbox input {
+display: none;
+}
+
+.round-checkbox .checkbox {
+width: 20px;
+height: 20px;
+border-radius: 50%;
+border: 2px solid #007bff;
+display: inline-block;
+position: relative;
+margin-left: 8px; /* Adjust the spacing to the left */
+transition: background-color 0.3s ease;
+flex-shrink: 0; /* Prevent shrinking */
+}
+
+.round-checkbox input:checked + .checkbox {
+background-color: #007bff;
+border-color: #007bff;
+}
+
+.round-checkbox input:checked + .checkbox::after {
+content: '';
+width: 10px;
+height: 10px;
+border-radius: 50%;
+background: #fff;
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+}
+
+.question-blend{
+    margin-bottom: 50px;
+}
+
+.container-blend{
+    height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    text-align: left;
+    margin: auto;
+    padding: 30px;
+}
+
+.choices-blend {
+    margin-left: 30px;
+}
+
+.choice-blend{
+    border-left: 5px solid #007bff;
+    display: flex;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.nav-btn_blend {
+    border-radius: 5px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 10px;
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+.choice-blend{
+    max-width: 60vh;
+    overflow-y: auto;
+}
+
+.custom-loader-2 {
+  margin: auto;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  border:8px solid;
+  border-color: gray #0000;
+  animation:s2 1s infinite;
+}
+
+#welcomePage{
+  margin-top: 30vh;
+}
+
+@media only screen and (max-width: 400px) {
+    #welcomePage{
+      margin-top: 20vh;
+    }
+}
+
+@keyframes s2 {to{transform: rotate(.5turn)}}
+
+/* Lock button styles */
+#inpLock {
+    display: none;
+}
+
+.btn-lock {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.btn-lock:hover {
+    opacity: 0.8;
+}
+
+.btn-lock svg {
+    transition: transform 0.3s ease;
+}
+
+.btn-lock:hover svg {
+    transform: scale(1.05);
+}
+
+/* Lock SVG path styles */
+.btn-lock .lockb {
+    fill: #525252;
+    transition: fill 0.3s ease;
+}
+
+.btn-lock .lock {
+    stroke: #525252;
+    stroke-width: 2;
+    fill: none;
+    transition: stroke 0.3s ease;
+}
+
+.btn-lock .bling {
+    stroke: #525252;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    transition: stroke 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+}
+
+/* Checked state styles */
+#inpLock:checked + .btn-lock .lockb {
+    fill: #007bff;
+}
+
+#inpLock:checked + .btn-lock .lock {
+    stroke: #007bff;
+}
+
+#inpLock:checked + .btn-lock .bling {
+    stroke: #ffd700;
+    opacity: 1;
+}
+
+/* Lock animation */
+#inpLock:checked + .btn-lock svg {
+    animation: lockShake 0.6s ease-in-out;
+}
+
+@keyframes lockShake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+    20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
+/* Modal styles */
+.modal__container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal__content {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 400px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modal__title {
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.modal__button-link {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 14px;
+    margin-top: 15px;
+    display: block;
+    text-align: center;
+}
+
+.modal__button-link:hover {
+    color: #0056b3;
+}

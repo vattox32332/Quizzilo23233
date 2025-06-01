@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  
+  {% load static %}
+
+  <link rel="icon" type="image/png" href="{% static 'media/logo.ico' %}">
+
+  <meta name="viewport" content= "width=device-width, initial-scale=1.0">
+
+  <title>Quizzilo - Google Sign in</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+
+  
+  
+<style>
+/* Some generic style to make the page look nice - not required */
+body, html {
+  height: 100%;
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button {
+  margin: 1rem;
+}
+
+/* GOOGLE SIGN IN BUTTON */
+.googleSignIn {
+  border: none;
+  border-radius: 2px;
+  background-color: #4285f4;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.24), 0 0 1px 0 rgba(0, 0, 0, 0.12);
+  border: none;
+  display: flex;
+  padding: 1px;
+  color: #FFF;
+}
+.googleSignIn:hover {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+}
+.googleSignIn:active {
+  background: #3367D6;
+}
+
+.googleSignIn--white {
+  background: #FFF;
+  color: rgba(0, 0, 0, 0.54);
+}
+.googleSignIn--white:active {
+  background: #EEEEEE;
+}
+
+.googleSignIn:disabled {
+  background: rgba(0, 0, 0, 0.08);
+  color: rgba(0, 0, 0, 0.4);
+  box-shadow: none;
+}
+
+.googleSignIn__text {
+  padding: 11px;
+  font-family: "Roboto";
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  text-align: left;
+  white-space: nowrap;
+}
+</style>
+
+  <script>
+  window.console = window.console || function(t) {};
+</script>
+
+  
+  
+</head>
+
+<body translate="no">
+
+<div class="container">
+
+    {% load i18n %}
+    {% load allauth %}
+    
+    <form method="post" action="">
+        {% csrf_token %}
+        <button type="submit" class="googleSignIn">
+            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/G-on-white.svg" alt="Google logo">
+            <span class="googleSignIn__text">Sign in with Google</span>
+        </button>
+    </form>
+    
+
+</div>
+  
+  
+  
+</body>
+
+</html>
