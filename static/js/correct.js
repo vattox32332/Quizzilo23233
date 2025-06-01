@@ -1,4 +1,5 @@
 function Correct() {
+    console.log('[DEBUG] Correct function called');
     
     $('.add_question_modal').css('display','none');
     $('.modal_loader').css('display','block');
@@ -7,6 +8,7 @@ function Correct() {
     modalContainer = document.getElementById('modal-container')
     modalContainer.classList.add('show-modal')
 
+    console.log('[DEBUG] Starting first AJAX request (Auto_Correct)');
     // Send an AJAX request to the same URL with CSRF token
     $.ajax({
         url: window.location.href,
@@ -16,8 +18,11 @@ function Correct() {
             'X-CSRFToken': getCSRFToken()
         },          
         success: function(response) {
+            console.log('[DEBUG] First AJAX response received:', response);
             if ('DATA' in response) {
+                console.log('[DEBUG] DATA found in first response, length:', response.DATA.length);
 
+                console.log('[DEBUG] Starting second AJAX request (correct2)');
                 $.ajax({
                     url: window.location.href,
                     method: "POST",
@@ -26,8 +31,11 @@ function Correct() {
                         'X-CSRFToken': getCSRFToken()
                     },          
                     success: function(response_2) {
+                        console.log('[DEBUG] Second AJAX response received:', response_2);
                         if ('DATA' in response_2) {
+                            console.log('[DEBUG] DATA found in second response, length:', response_2.DATA.length);
             
+                            console.log('[DEBUG] Starting third AJAX request (correct3)');
                             $.ajax({
                                 url: window.location.href,
                                 method: "POST",
@@ -36,9 +44,12 @@ function Correct() {
                                     'X-CSRFToken': getCSRFToken()
                                 },          
                                 success: function(response_3) {
+                                    console.log('[DEBUG] Third AJAX response received:', response_3);
                                     if ('DATA' in response_3) {
+                                        console.log('[DEBUG] DATA found in third response, type:', typeof response_3.DATA, 'content:', response_3.DATA);
                         
                                         let data = response_3.DATA;
+                                        console.log('[DEBUG] Processing data for chunking, type:', typeof data, 'isArray:', Array.isArray(data));
 
                                         // Function to chunk an array into smaller arrays of given size
                                         function chunkArray(arr, chunkSize) {
@@ -50,6 +61,7 @@ function Correct() {
                                         }
     
                                         let chunkedData = chunkArray(data, 20);
+                                        console.log('[DEBUG] Chunked data into', chunkedData.length, 'chunks');
                                         let bigArray = [];
                                         bigArray.push(chunkedData);
     
@@ -57,7 +69,9 @@ function Correct() {
                                         let ajaxRequests = [];
     
                                         // Loop through the big array and send AJAX requests for each chunk
-                                        bigArray[0].forEach((chunk) => {
+                                        console.log('[DEBUG] Starting to send chunks to correct4');
+                                        bigArray[0].forEach((chunk, index) => {
+                                            console.log('[DEBUG] Sending chunk', index, 'with', chunk.length, 'items');
                                             let ajaxRequest = $.ajax({
                                                 url: window.location.href,
                                                 method: "POST",
@@ -69,6 +83,7 @@ function Correct() {
     
                                         // Once all chunks have been processed
                                         $.when.apply($, ajaxRequests).done(function () {
+                                            console.log('[DEBUG] All chunks processed successfully');
                                             var currentUrl = window.location.href;
                                             // Use the current URL to reload content
                                             
@@ -122,17 +137,34 @@ function Correct() {
                                             }, 500);   
                                             const modalContainer = document.getElementById('modal-container')
                                             modalContainer.classList.remove('show-modal')
+                                        }).fail(function() {
+                                            console.log('[DEBUG] Error: Some chunks failed to process');
                                         });
                         
+                                    } else {
+                                        console.log('[DEBUG] Error: No DATA in third response');
                                     }
+                                },
+                                error: function(xhr, status, error) {
+                                    console.log('[DEBUG] Third AJAX call failed:', status, error);
                                 }
                             });
             
+                        } else {
+                            console.log('[DEBUG] Error: No DATA in second response');
                         }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('[DEBUG] Second AJAX call failed:', status, error);
                     }
                 });
 
+            } else {
+                console.log('[DEBUG] Error: No DATA in first response');
             }
+        },
+        error: function(xhr, status, error) {
+            console.log('[DEBUG] First AJAX call failed:', status, error);
         }
     });
 

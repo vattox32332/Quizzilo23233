@@ -5,8 +5,13 @@ import re
 
 # Function to process the array with AI
 def process_with_ai(Exam):
+    print(f"[DEBUG] process_with_ai called with Exam: {Exam}")
+    print(f"[DEBUG] Exam type: {type(Exam)}")
+    print(f"[DEBUG] Exam length: {len(Exam) if hasattr(Exam, '__len__') else 'N/A'}")
+    
     # Configure the Google Generative AI
     genai.configure(api_key='AIzaSyCUVg8SJPMHgIY5bCMtUqk5I0tuxNc9o9E')
+    print("[DEBUG] AI configured")
 
     # Create the model
     generation_config = {
@@ -19,10 +24,13 @@ def process_with_ai(Exam):
     model = genai.GenerativeModel(model_name="gemini-2.0-flash",
                                   generation_config=generation_config,
                                   safety_settings=[])
+    print("[DEBUG] Model created")
 
     chat_session = model.start_chat(history=[])
+    print("[DEBUG] Chat session started")
 
     # Send the array to the AI model
+    print("[DEBUG] Sending message to AI...")
     response = chat_session.send_message(f""" 
     
         You are a highly logical AI system specialized in evaluating structured exam arrays and determining the correctness of each proposition.
@@ -74,10 +82,17 @@ def process_with_ai(Exam):
 
     """)
 
+    print("[DEBUG] AI response received")
     txt_correction = response.text
+    print(f"[DEBUG] AI response text length: {len(txt_correction)}")
+    print(f"[DEBUG] AI response first 200 chars: {txt_correction[:200]}...")
 
     # Clean the string by removing '```python' and '```'
     cleaned_string = txt_correction.replace('```python',
                                             '').replace('```', '').strip()
+    
+    print(f"[DEBUG] Cleaned string length: {len(cleaned_string)}")
+    print(f"[DEBUG] Cleaned string first 200 chars: {cleaned_string[:200]}...")
+    print(f"[DEBUG] Returning cleaned_string")
 
     return cleaned_string
