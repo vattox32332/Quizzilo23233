@@ -6,7 +6,7 @@ import re
 # Function to process the array with AI
 def process_with_ai(Exam):
     # Configure the Google Generative AI
-    genai.configure(api_key='')
+    genai.configure(api_key='AIzaSyCUVg8SJPMHgIY5bCMtUqk5I0tuxNc9o9E')
 
     # Create the model
     generation_config = {
