@@ -15,9 +15,10 @@ def process_with_ai(Exam):
 
     # Create the model
     generation_config = {
-        "temperature": 0.9,
+        "temperature": 0.1,
         "top_p": 0.9,
         "top_k": 0,
+        "max_output_tokens": 16384,
         "response_mime_type": "text/plain",
     }
 
@@ -32,35 +33,15 @@ def process_with_ai(Exam):
     # Send the array to the AI model
     print("[DEBUG] Sending message to AI...")
     response = chat_session.send_message(f""" 
-        You are a medical expert AI system. Analyze each multiple choice question and determine which choices are correct (1) or incorrect (0).
-
-        CRITICAL: You must return ONLY the formatted output below. Do NOT include any explanations, code, or other text.
-
-        For each question in the exam data, output EXACTLY this format:
+        Analyze medical questions and return correct answers in this exact format:
 
         $1/1$ question_id $1/1$
         $2/2$ choice_id $2/2$
-        $3/3$ 0_or_1 $3/3$
-        $2/2$ choice_id $2/2$
-        $3/3$ 0_or_1 $3/3$
-        (repeat for all choices)
+        $3/3$ 1_or_0 $3/3$
 
-        Where:
-        - question_id is the actual ID from the first element of each question array
-        - choice_id is the actual ID from the first element of each choice array
-        - 0_or_1 is either 0 (incorrect) or 1 (correct) based on medical knowledge
+        Use 1 for correct, 0 for incorrect. Return ONLY formatted output, no explanations.
 
-        Example input: [[[123, "Question text"], [456, "Choice A text", ""], [789, "Choice B text", ""]]]
-        Example output:
-        $1/1$ 123 $1/1$
-        $2/2$ 456 $2/2$
-        $3/3$ 1 $3/3$
-        $2/2$ 789 $2/2$
-        $3/3$ 0 $3/3$
-
-        Now analyze this exam data: {Exam}
-
-        Return ONLY the formatted output with the special markers. NO other text.
+        Data: {Exam}
     """)
 
     print("[DEBUG] AI response received")
