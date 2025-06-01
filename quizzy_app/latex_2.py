@@ -3,7 +3,7 @@ import google.generativeai as genai
 def MathExpressions_2(Exam):
     print(f"[DEBUG] MathExpressions_2 called with Exam: {type(Exam)}")
     print(f"[DEBUG] Exam length: {len(Exam) if hasattr(Exam, '__len__') else 'N/A'}")
-    genai.configure(api_key='AIzaSyBkMKT3lb8dXnEYqPFTg7pRh9sV47BKSbA')
+    genai.configure(api_key='AIzaSyCUVg8SJPMHgIY5bCMtUqk5I0tuxNc9o9E')
     print("[DEBUG] AI configured for LaTeX processing")
 
     # Create the model
@@ -16,7 +16,7 @@ def MathExpressions_2(Exam):
     }
 
     model = genai.GenerativeModel(
-        model_name="gemini-1.5-pro",
+        model_name="gemini-2.0-flash",
         generation_config=generation_config,
         safety_settings=[]
     )
@@ -24,17 +24,18 @@ def MathExpressions_2(Exam):
     chat_session = model.start_chat(history=[])
     print("[DEBUG] Sending LaTeX processing request to AI...")
 
-    response = chat_session.send_message(f"""
-    Convert mathematical expressions to LaTeX format in this array structure:
+    try:
+        response = chat_session.send_message(f"""
+        Convert math to LaTeX in array format:
 
-    Input: [[[id, 'text'], [id, 'text']], ...]
-    Output: Same structure with LaTeX formatting
+        Input: [[[id, 'text'], [id, 'text']], ...]
+        Output: Same with LaTeX math using $$ for display, $ for inline
 
-    Use $$ for fractions, clean \\n and \\, keep IDs as integers.
-    Return ONLY the formatted array, no explanations.
-
-    Data: {Exam}
-    """)
+        Data: {Exam}
+        """)
+    except Exception as e:
+        print(f"[DEBUG] Error with AI request: {e}")
+        return str(Exam)  # Return original data if AI fails
 
     # Process the response from the AI
     print("[DEBUG] LaTeX AI response received")
