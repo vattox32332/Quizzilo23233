@@ -1,20 +1,21 @@
+
 function Math_Expressions() {
-    $('.add_question_modal').css('display', 'none');
-    $('.modal_loader').css('display', 'block');
+    
+    $('.add_question_modal').css('display','none');
+    $('.modal_loader').css('display','block');
+    
+    /*=============== SHOW MODAL ===============*/
+    modalContainer = document.getElementById('modal-container')
+    modalContainer.classList.add('show-modal')
 
-    // Show the modal
-    const modalContainer = document.getElementById('modal-container');
-    modalContainer.classList.add('show-modal');
-
-    // Initialize an empty array to store AJAX requests
-    let ajaxRequests = [];
-
-    // Send an AJAX request to get the initial data
+    // Send an AJAX request to the same URL with CSRF token
     $.ajax({
         url: window.location.href,
         method: "POST",
-        data: { IsMath: 'true' },
-        headers: { 'X-CSRFToken': getCSRFToken() },
+        data: { latex: 'latex'},
+        headers: {
+            'X-CSRFToken': getCSRFToken()
+        },          
         success: function(response) {
             if ('DATA' in response) {
                 let data = response.DATA;
@@ -23,64 +24,119 @@ function Math_Expressions() {
                 function chunkArray(arr, chunkSize) {
                     let chunks = [];
                     for (let i = 0; i < arr.length; i += chunkSize) {
-                        chunks.push(arr.slice(i, chunkSize + i));
+                        chunks.push(arr.slice(i, i + chunkSize));
                     }
                     return chunks;
                 }
 
-                // Chunk the data into arrays of 20 items
-                let chunkedData = chunkArray(data, 20);
+                let chunkedData = chunkArray(data, 5); // Smaller chunks for latex processing
 
-                // Process each chunk and store AJAX requests
-                chunkedData.forEach((chunk) => {
-                    console.log(JSON.stringify(chunk));
-                    let ajaxRequest = $.ajax({
+                // Function to send each chunk sequentially
+                function sendLatexChunksSequentially(chunks) {
+                    // Check if there are no chunks left to process
+                    if (chunks.length === 0) {
+                        // All chunks have been sent
+                        let currentUrl = window.location.href;
+
+                        // Reload content using jQuery
+                        $('#jquery_load').load(currentUrl + ' #Questions_body', function() {
+                            feather.replace();
+                            
+                            // Make the divs inside parentDiv sortable
+                            $("#Questions_body").sortable({
+                                update: function(event, ui) {
+                                    // Update the IDs of each child div according to their new position
+                                    $("#Questions_body .Question").each(function(index) {
+                                        $(this).attr("id", (index + 1));
+                                    });
+
+                                    let resultArray = [];
+
+                                    $('.Question').each(function() {
+                                        let divId = $(this).attr('id');
+                                        let textareaId = $(this).find('textarea').attr('id');
+                                        let number = textareaId.match(/\d+$/)[0];
+                                        resultArray.push([divId, number]);
+                                    });
+
+                                    $.ajax({
+                                        url: window.location.href,
+                                        method: "POST",
+                                        data: { New_Questions_Order : JSON.stringify(resultArray) },
+                                        headers: {
+                                            'X-CSRFToken': getCSRFToken()
+                                        }
+                                    });
+                                }
+                            });
+                        });
+
+                        setTimeout(function() {
+                            $('.add_question_modal').css('display','block');
+                            $('.modal_loader').css('display','none');
+                        }, 500);   
+                        const modalContainer = document.getElementById('modal-container')
+                        modalContainer.classList.remove('show-modal')
+                        return;
+                    }
+
+                    // Get the first chunk from the array
+                    let chunk = chunks.shift();
+                    console.log('Processing chunk:', JSON.stringify(chunk));
+
+                    // Send the chunk to latex2
+                    $.ajax({
                         url: window.location.href,
                         method: "POST",
                         data: { latex2: JSON.stringify(chunk) },
-                        headers: { 'X-CSRFToken': getCSRFToken() }
-                    }).then(function(response_2) {
-                        console.log(JSON.stringify(response_2.DATA));
-                        return $.ajax({
-                            url: window.location.href,
-                            method: "POST",
-                            data: { latex4: JSON.stringify(response_2.DATA) },
-                            headers: { 'X-CSRFToken': getCSRFToken() }
-                        });
-                    });
-
-                    // Push each request to the ajaxRequests array
-                    ajaxRequests.push(ajaxRequest);
-                });
-
-                // Once all AJAX requests are done, reload content
-                $.when.apply($, ajaxRequests).done(function() {
-                    let currentUrl = window.location.href;
-
-                    // Reload content using jQuery
-                    $('#jquery_load').load(currentUrl + ' #Questions_body', function() {
-                        feather.replace();
-
-                        // Make the divs sortable
-                        $("#Questions_body").sortable({
-                            update: function(event, ui) {
-                                // Update the IDs of each child div
-                                $("#Questions_body .Question").each(function(index) {
-                                    $(this).attr("id", (index + 1));
+                        headers: { 'X-CSRFToken': getCSRFToken() },
+                        success: function(response_2) {
+                            if ('DATA' in response_2) {
+                                console.log('Latex2 response:', JSON.stringify(response_2.DATA));
+                                
+                                // Send to latex4
+                                $.ajax({
+                                    url: window.location.href,
+                                    method: "POST",
+                                    data: { latex4: JSON.stringify(response_2.DATA) },
+                                    headers: { 'X-CSRFToken': getCSRFToken() },
+                                    success: function(response_4) {
+                                        // Recursively call the function to send the next chunk
+                                        sendLatexChunksSequentially(chunks);
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.error('Error in latex4:', error);
+                                        // Continue with next chunk even if one fails
+                                        sendLatexChunksSequentially(chunks);
+                                    }
                                 });
+                            } else {
+                                // Continue with next chunk if no DATA
+                                sendLatexChunksSequentially(chunks);
                             }
-                        });
-
-                        // Hide the loader and show the modal
-                        setTimeout(function() {
-                            $('.add_question_modal').css('display', 'block');
-                            $('.modal_loader').css('display', 'none');
-                        }, 500);
-
-                        modalContainer.classList.remove('show-modal');
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error in latex2:', error);
+                            // Continue with next chunk even if one fails
+                            sendLatexChunksSequentially(chunks);
+                        }
                     });
-                });
+                }
+
+                // Start sending chunks sequentially
+                sendLatexChunksSequentially(chunkedData);
             }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error in initial latex request:', error);
+            $('.add_question_modal').css('display','block');
+            $('.modal_loader').css('display','none');
+            const modalContainer = document.getElementById('modal-container')
+            modalContainer.classList.remove('show-modal')
         }
     });
+}
+
+function getCSRFToken() {
+    return $('[name=csrfmiddlewaretoken]').val();
 }

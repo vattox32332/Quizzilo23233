@@ -49,7 +49,7 @@ def MathExpressions_3(Correction_txt):
                 # Remove newline characters
                 item[1] = item[1].replace('\\n', ' ')
         return arr
-    
+
     clean_parsed_array = clean_array(parsed_array) 
 
     return clean_parsed_array

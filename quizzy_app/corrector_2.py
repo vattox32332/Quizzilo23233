@@ -7,11 +7,12 @@ def process_with_ai(Exam):
     # Configure the Google Generative AI
     genai.configure(api_key='AIzaSyCLeDS3QDsKfTH5Ri9FSjnFiWC-oBgr7hw')
 
-    # Create the model
+    # Create the model with optimized settings for faster processing
     generation_config = {
-        "temperature": 0.9,
-        "top_p": 0.9,
-        "top_k": 0,
+        "temperature": 0.7,
+        "top_p": 0.8,
+        "top_k": 40,
+        "max_output_tokens": 4096,
         "response_mime_type": "text/plain",
     }
 
