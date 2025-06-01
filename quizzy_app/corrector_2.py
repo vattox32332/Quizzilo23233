@@ -32,54 +32,35 @@ def process_with_ai(Exam):
     # Send the array to the AI model
     print("[DEBUG] Sending message to AI...")
     response = chat_session.send_message(f""" 
-    
-        You are a highly logical AI system specialized in evaluating structured exam arrays and determining the correctness of each proposition.
-        
-        Your task is to process the given nested array of exam questions and multiple-choice answers. For each question:
-        
-        Identify the correct answer(s) as true (1) and the incorrect ones as false (0).
-        
-        Return the output strictly in the following structured format:
-        
-        Begin each question block with:
-        $1/1$ <question_id> $1/1$
-        
-        For each choice under that question, return:
-        
-        $2/2$ <choice_id> $2/2$
-        
-        $3/3$ 0 or 1 $3/3$ (where 1 = true, 0 = false)
-        
-        Requirements:
-        
-        You must preserve the exact sequence and formatting.
-        
-        Return only the answer block, without any explanations or commentary.
-        
-        Maintain strict nesting logic and label pairing as per the format.
-        
-        Input variable: Exam
-        Input structure:
-        
-        [
-          [
-            ['question_id', 'question_text'],
-            ['choice_id1', 'choice_text1', ''],
-            ['choice_id2', 'choice_text2', ''],
-            ...
-          ],
-          ...
-        ]
-        You are to analyze each choice for its factual accuracy and return the response as:
-        
-        
-        $1/1$ <question_id> $1/1$
-        $2/2$ <choice_id1> $2/2$
-        $3/3$ <0 or 1> $3/3$
-        $2/2$ <choice_id2> $2/2$
-        $3/3$ <0 or 1> $3/3$
-        ...
+        You are a medical expert AI system. Analyze each multiple choice question and determine which choices are correct (1) or incorrect (0).
 
+        CRITICAL: You must return ONLY the formatted output below. Do NOT include any explanations, code, or other text.
+
+        For each question in the exam data, output EXACTLY this format:
+
+        $1/1$ question_id $1/1$
+        $2/2$ choice_id $2/2$
+        $3/3$ 0_or_1 $3/3$
+        $2/2$ choice_id $2/2$
+        $3/3$ 0_or_1 $3/3$
+        (repeat for all choices)
+
+        Where:
+        - question_id is the actual ID from the first element of each question array
+        - choice_id is the actual ID from the first element of each choice array
+        - 0_or_1 is either 0 (incorrect) or 1 (correct) based on medical knowledge
+
+        Example input: [[[123, "Question text"], [456, "Choice A text", ""], [789, "Choice B text", ""]]]
+        Example output:
+        $1/1$ 123 $1/1$
+        $2/2$ 456 $2/2$
+        $3/3$ 1 $3/3$
+        $2/2$ 789 $2/2$
+        $3/3$ 0 $3/3$
+
+        Now analyze this exam data: {Exam}
+
+        Return ONLY the formatted output with the special markers. NO other text.
     """)
 
     print("[DEBUG] AI response received")
