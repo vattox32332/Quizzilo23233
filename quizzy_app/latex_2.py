@@ -3,12 +3,11 @@ import google.generativeai as genai
 def MathExpressions_2(Exam):
     genai.configure(api_key='AIzaSyBkMKT3lb8dXnEYqPFTg7pRh9sV47BKSbA')
 
-    # Create the model with optimized settings for faster processing
+    # Create the model
     generation_config = {
-        "temperature": 0.7,
-        "top_p": 0.8,
-        "top_k": 40,
-        "max_output_tokens": 4096,
+        "temperature": 0.9,
+        "top_p": 0.9,
+        "top_k": 0,
         "response_mime_type": "text/plain",
     }
 
