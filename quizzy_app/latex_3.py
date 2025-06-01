@@ -2,8 +2,11 @@ from .models import *
 import re
 
 def MathExpressions_3(Correction_txt):
-    print(Correction_txt)
+    print(f"[DEBUG] MathExpressions_3 called")
+    print(f"[DEBUG] Input length: {len(Correction_txt)}")
+    print(f"[DEBUG] Input first 200 chars: {Correction_txt[:200]}...")
     cleaned_string = Correction_txt.replace('```python', '').replace('```', '').strip()
+    print(f"[DEBUG] Cleaned string length: {len(cleaned_string)}")
 
     def parse_complex_string(s):
         # Remove unnecessary characters and clean the string
@@ -40,6 +43,7 @@ def MathExpressions_3(Correction_txt):
         return result
 
     parsed_array = parse_complex_string(cleaned_string)
+    print(f"[DEBUG] Parsed {len(parsed_array)} items from LaTeX response")
 
     def clean_array(arr):
         for sublist in arr:
@@ -50,19 +54,38 @@ def MathExpressions_3(Correction_txt):
                 item[1] = item[1].replace('\\n', ' ')
         return arr
     
-    clean_parsed_array = clean_array(parsed_array) 
-
+    clean_parsed_array = clean_array(parsed_array)
+    print(f"[DEBUG] Cleaned array has {len(clean_parsed_array)} items")
+    
     return clean_parsed_array
 
 
 def MathExpressions_4(Correction):
+    print(f"[DEBUG] MathExpressions_4 called")
     Correction_Parse = MathExpressions_3(Correction)
-    print(Correction_Parse)
-    for data in Correction_Parse:
-        question = Question.objects.get(id=int(data[0][0]))
-        question.Content = data[0][1]
-        question.save()
-        for elements in data[1:]:
-            choice = Choice.objects.get(id=int(elements[0]))
-            choice.Content = elements[1]
-            choice.save()
+    print(f"[DEBUG] Processing {len(Correction_Parse)} items for database update")
+    
+    total_questions_updated = 0
+    total_choices_updated = 0
+    
+    for i, data in enumerate(Correction_Parse):
+        print(f"[DEBUG] Processing item {i}: Question ID {data[0][0]}")
+        try:
+            question = Question.objects.get(id=int(data[0][0]))
+            old_content = question.Content
+            question.Content = data[0][1]
+            question.save()
+            total_questions_updated += 1
+            print(f"[DEBUG] Updated question {data[0][0]}: Content updated")
+            
+            for j, elements in enumerate(data[1:]):
+                choice = Choice.objects.get(id=int(elements[0]))
+                old_choice_content = choice.Content
+                choice.Content = elements[1]
+                choice.save()
+                total_choices_updated += 1
+                print(f"[DEBUG] Updated choice {elements[0]}: Content updated")
+        except Exception as e:
+            print(f"[DEBUG] Error processing item {i}: {e}")
+    
+    print(f"[DEBUG] LaTeX update completed: {total_questions_updated} questions, {total_choices_updated} choices updated")
