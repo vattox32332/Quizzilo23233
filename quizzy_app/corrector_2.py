@@ -6,7 +6,7 @@ import re
 # Function to process the array with AI
 def process_with_ai(Exam):
     # Configure the Google Generative AI
-    genai.configure(api_key='AIzaSyCLeDS3QDsKfTH5Ri9FSjnFiWC-oBgr7hw')
+    genai.configure(api_key='')
 
     # Create the model
     generation_config = {
@@ -16,7 +16,7 @@ def process_with_ai(Exam):
         "response_mime_type": "text/plain",
     }
 
-    model = genai.GenerativeModel(model_name="gemini-1.5-pro",
+    model = genai.GenerativeModel(model_name="gemini-2.0-flash",
                                   generation_config=generation_config,
                                   safety_settings=[])
 
