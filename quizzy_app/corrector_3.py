@@ -10,6 +10,7 @@ def parse_correction_into_array(cleaned_string):
     # Initialize empty lists
     corrections = []
     current_question = None
+    current_question_id = None
 
     # Use regex to match the patterns
     lines = cleaned_string.splitlines()
@@ -17,18 +18,18 @@ def parse_correction_into_array(cleaned_string):
     for line in lines:
         try:
             if "$1/1$" in line:  # It's a question
-                # Extract the question text
+                # Extract the question ID
                 question_match = re.search(r'\$1/1\$\s*(.*?)\s*\$1/1\$', line)
                 if question_match:
-                    question = question_match.group(1)
-                    current_question = [[question]]  # Create a new question array wrapped in an array
+                    current_question_id = question_match.group(1).strip()
+                    current_question = [[current_question_id]]  # Create a new question array with the ID
                     corrections.append(current_question)  # Add it to the main list
             elif "$2/2$" in line:  # It's a choice
-                # Extract the choice text
+                # Extract the choice ID
                 choice_match = re.search(r'\$2/2\$\s*(.*?)\s*\$2/2\$', line)
                 if choice_match and current_question is not None:
-                    choice = choice_match.group(1)
-                    current_question.append([choice])  # Add the choice to the current question array
+                    choice_id = choice_match.group(1).strip()
+                    current_question.append([choice_id])  # Add the choice ID to the current question array
             elif "$3/3$" in line:  # It's a 0 or 1 indicator
                 # Extract the 0 or 1 value
                 value_match = re.search(r'\$3/3\$\s*(.*?)\s*\$3/3\$', line)
